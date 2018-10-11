@@ -78,8 +78,12 @@ export class ExpenseController {
     }
 
     @Post('/requestToExport')
-    requestToExport(@Body() criteria: Criteria): Observable<any> {
+    requestToExport(@Body() criteria: Number[]): Observable<any> {
         console.log(`criteria: ${JSON.stringify(criteria)}`);
+
+        criteria.forEach(function (item) {
+            MockData.expenses.find(expense => expense.id === item).status = 'Exported';
+        });
 
         return of({ status: "true" });
     }
