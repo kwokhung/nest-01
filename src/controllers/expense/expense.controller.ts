@@ -65,23 +65,23 @@ export class ExpenseController {
     }
 
     @Post('/getExpenses')
-    getExpenses(@Body() criteria: Criteria): Observable<Expense[]> {
-        console.log(`criteria: ${JSON.stringify(criteria)}`);
+    getExpenses(@Body() parameter: Criteria): Observable<Expense[]> {
+        console.log(`parameter: ${JSON.stringify(parameter)}`);
 
         return of(MockData.expenses.filter(
-            expense => !this.isSomething(criteria.applicationDate) || expense.applicationDate === criteria.applicationDate
+            expense => !this.isSomething(parameter.applicationDate) || expense.applicationDate === parameter.applicationDate
         ).filter(
-            expense => !this.isSomething(criteria.applicationNo) || expense.applicationNo === criteria.applicationNo
+            expense => !this.isSomething(parameter.applicationNo) || expense.applicationNo === parameter.applicationNo
         ).filter(
-            expense => !this.isSomething(criteria.payee) || expense.payee === criteria.payee
+            expense => !this.isSomething(parameter.payee) || expense.payee === parameter.payee
         ));
     }
 
     @Post('/requestToExport')
-    requestToExport(@Body() criteria: Number[]): Observable<any> {
-        console.log(`criteria: ${JSON.stringify(criteria)}`);
+    requestToExport(@Body() parameter: Number[]): Observable<any> {
+        console.log(`parameter: ${JSON.stringify(parameter)}`);
 
-        criteria.forEach(function (item) {
+        parameter.forEach(function (item) {
             MockData.expenses.find(expense => expense.id === item).status = 'Exported';
         });
 
