@@ -4,9 +4,9 @@ import { Observable, of } from 'rxjs';
 @Controller('items')
 export class ItemsController {
 
-    @Get('/b')
-    findAlla(): Observable<number> {
-        return of(1, 2, 3);
+    @Get('/all')
+    findAlla(): Observable<number[]> {
+        return of([1, 2, 3]);
     }
 
 }
