@@ -77,6 +77,13 @@ export class ExpenseController {
         ));
     }
 
+    @Post('/requestToExport')
+    requestToExport(@Body() criteria: Criteria): Observable<any> {
+        console.log(`criteria: ${JSON.stringify(criteria)}`);
+
+        return of({ status: "true" });
+    }
+
     private isSomething(something: any) {
         return (something !== undefined && something !== null && something !== '');
     }
