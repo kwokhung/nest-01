@@ -42,8 +42,16 @@ class MockData {
             'id': 4,
             'applicationDate': '20181004',
             'applicationNo': 'App-04',
-            'payee': 'abc',
+            'payee': 'def',
             'status': 'Exported',
+            'selected': false
+        },
+        {
+            'id': 5,
+            'applicationDate': '20181004',
+            'applicationNo': 'App-05',
+            'payee': 'abc',
+            'status': 'Export Pending',
             'selected': false
         }
     ];
