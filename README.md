@@ -3,6 +3,7 @@ npm i -g @nestjs/cli
 nest new nest-01
 nest g controller cats
 nest generate controller items controllers
+nest generate controller expense controllers
 
 npm install
 npm run start
