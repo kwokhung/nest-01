@@ -13,7 +13,7 @@ class Expense {
 
 class MockData {
 
-    public static Expenses: Expense[] = [
+    public static expenses: Expense[] = [
         {
             'id': 1,
             'applicationDate': '20181001',
@@ -61,14 +61,14 @@ export class ExpenseController {
 
     @Get('/getAllExpenses')
     getAllExpenses(): Observable<Expense[]> {
-        return of(MockData.Expenses);
+        return of(MockData.expenses);
     }
 
     @Post('/getExpenses')
     getExpenses(@Body() criteria: Criteria): Observable<Expense[]> {
         console.log(`criteria: ${JSON.stringify(criteria)}`);
 
-        return of(MockData.Expenses.filter(
+        return of(MockData.expenses.filter(
             expense => !this.isSomething(criteria.applicationDate) || expense.applicationDate === criteria.applicationDate
         ).filter(
             expense => !this.isSomething(criteria.applicationNo) || expense.applicationNo === criteria.applicationNo
