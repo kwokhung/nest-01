@@ -19,7 +19,7 @@ class MockData {
             'applicationDate': '20181001',
             'applicationNo': 'App-01',
             'payee': '16990',
-            'status': '',
+            'status': 'Export Pending',
             'selected': false
         },
         {
@@ -32,10 +32,10 @@ class MockData {
         },
         {
             'id': 3,
-            'applicationDate': '20181003',
+            'applicationDate': '20181001',
             'applicationNo': 'App-03',
             'payee': 'abc',
-            'status': '',
+            'status': 'Export Pending',
             'selected': false
         },
         {
