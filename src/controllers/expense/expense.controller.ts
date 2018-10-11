@@ -39,6 +39,14 @@ export class ExpenseController {
                 'payee': 'abc',
                 'status': '',
                 'selected': false
+            },
+            {
+                'id': 4,
+                'applicationDate': '20181004',
+                'applicationNo': 'App-04',
+                'payee': 'abc',
+                'status': 'Exported',
+                'selected': false
             }
         ]);
     }
