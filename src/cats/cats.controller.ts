@@ -3,6 +3,7 @@ import { Observable, of } from 'rxjs';
 
 @Controller('cats')
 export class CatsController {
+    
     @Get('/type/:id')
     findOne(@Param('id') id) {
         console.log(id);
