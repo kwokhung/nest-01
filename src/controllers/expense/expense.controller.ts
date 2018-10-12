@@ -11,6 +11,13 @@ class Expense {
     selected: boolean;
 }
 
+class ExportItem {
+    id: number;
+    date: string;
+    name: string;
+    path: string;
+}
+
 class MockData {
 
     public static expenses: Expense[] = [
@@ -56,6 +63,21 @@ class MockData {
         }
     ];
 
+    public static exportList: ExportItem[] = [
+        {
+            'id': 1,
+            'date': '20181001',
+            'name': 'App-01',
+            'path': '16990'
+        },
+        {
+            'id': 2,
+            'date': '20181002',
+            'name': 'App-02',
+            'path': '59990'
+        }
+    ];
+
 }
 
 interface Criteria {
@@ -94,6 +116,11 @@ export class ExpenseController {
         });
 
         return of({ status: "true" });
+    }
+
+    @Get('/getExportList')
+    getExportList(): Observable<ExportItem[]> {
+        return of(MockData.exportList);
     }
 
     private isSomething(something: any) {
