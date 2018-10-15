@@ -1,6 +1,6 @@
-import { Controller, Get, Post, Body } from '@nestjs/common';
+import { Controller, Get, Post, Body, Res } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
-import { isNullOrUndefined } from 'util';
+import * as path from 'path';
 
 class Expense {
     id: number;
@@ -121,6 +121,11 @@ export class ExpenseController {
     @Get('/getExportList')
     getExportList(): Observable<ExportItem[]> {
         return of(MockData.exportList);
+    }
+
+    @Get('/getExportItemFile')
+    getExportItemFile(@Res() response): void {
+        response.sendFile(path.resolve('C:/temp/Reset Password Log.csv'));
     }
 
     private isSomething(something: any) {
