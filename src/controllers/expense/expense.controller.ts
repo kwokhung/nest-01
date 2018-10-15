@@ -15,8 +15,7 @@ class Expense {
 class ExportItem {
     id: number;
     date: string;
-    name: string;
-    path: string;
+    batchNo: string;
 }
 
 class MockData {
@@ -70,23 +69,31 @@ class MockData {
         {
             'id': 1,
             'date': '20181001',
-            'name': 'App-01',
-            'path': '16990'
+            'batchNo': '001'
         },
         {
             'id': 2,
             'date': '20181002',
-            'name': 'App-02',
-            'path': '59990'
+            'batchNo': '001'
+        },
+        {
+            'id': 3,
+            'date': '20181002',
+            'batchNo': '002'
         }
     ];
 
 }
 
-interface Criteria {
+interface SearchCriteria {
     applicationDate: string;
     applicationNo: string;
     payee: string;
+}
+
+interface DownloadExportCriteria {
+    date: string;
+    batchNo: string;
 }
 
 @Controller('expense')
@@ -98,7 +105,7 @@ export class ExpenseController {
     }
 
     @Post('/getExpenses')
-    getExpenses(@Body() parameter: Criteria): Observable<Expense[]> {
+    getExpenses(@Body() parameter: SearchCriteria): Observable<Expense[]> {
         console.log(`parameter: ${JSON.stringify(parameter)}`);
 
         return of(MockData.expenses.filter(
@@ -129,11 +136,11 @@ export class ExpenseController {
 
                 return of({ status: "false" });
             }
-        });
+        }); ``
 
         let seqNo: number = 1;
 
-        parameter.forEach(function (item) {
+        parameter.forEach((item) => {
             MockData.expenses.find(expense => expense.id === item).status = 'Exported';
 
             fs.appendFile(`C:/temp/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}"\r\n`, (err) => {
@@ -152,12 +159,24 @@ export class ExpenseController {
 
     @Get('/getExportList')
     getExportList(): Observable<ExportItem[]> {
-        return of(MockData.exportList);
+        let exportList: ExportItem[] = [];
+        let id = 1;
+
+        fs.readdirSync('C:/temp').forEach(file => {
+            let matches = file.match(/^export-(\d{8})-(\d{3}).csv$/);
+
+            if (matches) {
+                console.log(matches);
+                exportList.push({ id: id++, date: matches[1], batchNo: matches[2] });
+            }
+        });
+
+        return of(exportList);
     }
 
-    @Get('/getExportItemFile')
-    getExportItemFile(@Res() response): void {
-        response.sendFile(path.resolve('C:/temp/export.csv'));
+    @Post('/getExportItemFile')
+    getExportItemFile(@Body() parameter: DownloadExportCriteria, @Res() response): void {
+        response.sendFile(path.resolve(`C:/temp/export-${parameter.date}-${parameter.batchNo}.csv`));
     }
 
     private isSomething(something: any) {
