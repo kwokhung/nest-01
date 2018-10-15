@@ -1,6 +1,7 @@
 import { Controller, Get, Post, Body, Res } from '@nestjs/common';
 import { Observable, of } from 'rxjs';
 import * as path from 'path';
+import * as fs from 'fs';
 
 class Expense {
     id: number;
@@ -19,6 +20,8 @@ class ExportItem {
 }
 
 class MockData {
+
+    public static batchNo: number = 1;
 
     public static expenses: Expense[] = [
         {
@@ -111,9 +114,38 @@ export class ExpenseController {
     requestToExport(@Body() parameter: Number[]): Observable<any> {
         console.log(`parameter: ${JSON.stringify(parameter)}`);
 
+        let now = new Date();
+        let y = now.getFullYear();
+        let m = now.getMonth() + 1;
+        let d = now.getDate();
+        let today = '' + y + (m < 10 ? '0' : '') + m + (d < 10 ? '0' : '') + d;
+
+        let batchNo = '' + MockData.batchNo;
+        while (batchNo.length < (3 || 2)) { batchNo = '0' + batchNo; }
+
+        fs.writeFile(`C:/temp/export-${today}-${batchNo}.csv`, '"SeqNo","ExpenseId"\r\n', (err) => {
+            if (err) {
+                console.error(JSON.stringify(err));
+
+                return of({ status: "false" });
+            }
+        });
+
+        let seqNo: number = 1;
+
         parameter.forEach(function (item) {
             MockData.expenses.find(expense => expense.id === item).status = 'Exported';
+
+            fs.appendFile(`C:/temp/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}"\r\n`, (err) => {
+                if (err) {
+                    console.error(JSON.stringify(err));
+
+                    return of({ status: "false" });
+                }
+            });
         });
+
+        MockData.batchNo++;
 
         return of({ status: "true" });
     }
@@ -125,7 +157,7 @@ export class ExpenseController {
 
     @Get('/getExportItemFile')
     getExportItemFile(@Res() response): void {
-        response.sendFile(path.resolve('C:/temp/Reset Password Log.csv'));
+        response.sendFile(path.resolve('C:/temp/export.csv'));
     }
 
     private isSomething(something: any) {
