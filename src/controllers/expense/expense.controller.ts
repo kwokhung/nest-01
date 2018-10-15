@@ -20,6 +20,8 @@ class ExportItem {
 
 class MockData {
 
+    public static exportDirectory: string = 'C:/temp';
+
     public static batchNo: number = 1;
 
     public static expenses: Expense[] = [
@@ -130,7 +132,7 @@ export class ExpenseController {
         let batchNo = '' + MockData.batchNo;
         while (batchNo.length < (3 || 2)) { batchNo = '0' + batchNo; }
 
-        fs.writeFileSync(`C:/temp/export-${today}-${batchNo}.csv`, '"SeqNo","ExpenseId","ApplicationNo"\r\n');
+        fs.writeFileSync(`${MockData.exportDirectory}/export-${today}-${batchNo}.csv`, '"SeqNo","ExpenseId","ApplicationNo"\r\n');
 
         let seqNo: number = 1;
 
@@ -138,7 +140,7 @@ export class ExpenseController {
             let expense = MockData.expenses.find(expense => expense.id === item);
             expense.status = 'Exported';
 
-            fs.appendFileSync(`C:/temp/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}","${expense.applicationNo}"\r\n`);
+            fs.appendFileSync(`${MockData.exportDirectory}/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}","${expense.applicationNo}"\r\n`);
         });
 
         MockData.batchNo++;
@@ -151,7 +153,7 @@ export class ExpenseController {
         let exportList: ExportItem[] = [];
         let id = 1;
 
-        fs.readdirSync('C:/temp').forEach(file => {
+        fs.readdirSync(MockData.exportDirectory).forEach(file => {
             let matches = file.match(/^export-(\d{8})-(\d{3}).csv$/);
 
             if (matches) {
@@ -165,7 +167,7 @@ export class ExpenseController {
 
     @Post('/getExportItemFile')
     getExportItemFile(@Body() parameter: DownloadExportCriteria, @Res() response): void {
-        response.sendFile(path.resolve(`C:/temp/export-${parameter.date}-${parameter.batchNo}.csv`));
+        response.sendFile(path.resolve(`${MockData.exportDirectory}/export-${parameter.date}-${parameter.batchNo}.csv`));
     }
 
     private isSomething(something: any) {
