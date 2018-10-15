@@ -36,7 +36,7 @@ class MockData {
             'applicationDate': '20181002',
             'applicationNo': 'App-02',
             'payee': '59990',
-            'status': 'Exported',
+            'status': 'Export Pending',
             'selected': false
         },
         {
@@ -52,7 +52,7 @@ class MockData {
             'applicationDate': '20181004',
             'applicationNo': 'App-04',
             'payee': 'def',
-            'status': 'Exported',
+            'status': 'Export Pending',
             'selected': false
         },
         {
@@ -130,26 +130,15 @@ export class ExpenseController {
         let batchNo = '' + MockData.batchNo;
         while (batchNo.length < (3 || 2)) { batchNo = '0' + batchNo; }
 
-        fs.writeFile(`C:/temp/export-${today}-${batchNo}.csv`, '"SeqNo","ExpenseId"\r\n', (err) => {
-            if (err) {
-                console.error(JSON.stringify(err));
-
-                return of({ status: "false" });
-            }
-        }); ``
+        fs.writeFileSync(`C:/temp/export-${today}-${batchNo}.csv`, '"SeqNo","ExpenseId","ApplicationNo"\r\n');
 
         let seqNo: number = 1;
 
         parameter.forEach((item) => {
-            MockData.expenses.find(expense => expense.id === item).status = 'Exported';
+            let expense = MockData.expenses.find(expense => expense.id === item);
+            expense.status = 'Exported';
 
-            fs.appendFile(`C:/temp/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}"\r\n`, (err) => {
-                if (err) {
-                    console.error(JSON.stringify(err));
-
-                    return of({ status: "false" });
-                }
-            });
+            fs.appendFileSync(`C:/temp/export-${today}-${batchNo}.csv`, `"${seqNo++}","${item}","${expense.applicationNo}"\r\n`);
         });
 
         MockData.batchNo++;
@@ -166,7 +155,7 @@ export class ExpenseController {
             let matches = file.match(/^export-(\d{8})-(\d{3}).csv$/);
 
             if (matches) {
-                console.log(matches);
+                //console.log(matches);
                 exportList.push({ id: id++, date: matches[1], batchNo: matches[2] });
             }
         });
